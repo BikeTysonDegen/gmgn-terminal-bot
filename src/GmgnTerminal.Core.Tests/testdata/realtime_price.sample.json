@@ -1,0 +1,8 @@
+{
+  "_comment": "SYNTHETIC sample - live endpoint is Cloudflare-protected. GET /defi/quotation/v1/sol/tokens/realtime_token_price?address={mint}. Mapper also accepts data keyed by mint address.",
+  "code": 0,
+  "msg": "success",
+  "data": {
+    "price": 0.0000842
+  }
+}

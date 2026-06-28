@@ -1,0 +1,30 @@
+{
+  "_comment": "SYNTHETIC sample - live endpoint is Cloudflare-protected. Shape follows community clients: GET /defi/quotation/v1/trades/sol/{mint}?limit=N",
+  "code": 0,
+  "msg": "success",
+  "data": {
+    "history": [
+      {
+        "tx_hash": "4mJdKsTuVwXyZaBcDeFgHiJkLmNoPqRsTuVwXyZ1234567890abcdefABCDEF1",
+        "side": "buy",
+        "maker": "7yZaBcDeFgHiJkLmNoPqRsTuVwXyZaBcDeFgHiJkLmNo",
+        "sol_amount": "1.25",
+        "usd_amount": "187.5",
+        "token_amount": "2240000.0",
+        "price_usd": "0.0000837",
+        "time_unix": 1789363150
+      },
+      {
+        "tx_hash": "2wXyZaBcDeFgHiJkLmNoPqRsTuVwXyZaBcDeFgHiJk9876543210fedcbaFEDCB",
+        "side": "sell",
+        "maker": "5aBcDeFgHiJkLmNoPqRsTuVwXyZaBcDeFgHiJkLmNoPq",
+        "sol_amount": "0.31",
+        "usd_amount": "46.5",
+        "token_amount": "510000.0",
+        "price_usd": "0.0000912",
+        "time_unix": 1789363210
+      }
+    ],
+    "next": null
+  }
+}

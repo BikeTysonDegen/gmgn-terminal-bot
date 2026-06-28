@@ -1,0 +1,52 @@
+{
+  "_comment": "SYNTHETIC sample - live endpoint is Cloudflare-protected (needs browser TLS fingerprint). Shape follows gmgn docs/community clients: GET /api/v1/wallet_activity/sol?type=sell&type=buy&wallet={addr}&limit=N",
+  "code": 0,
+  "msg": "success",
+  "data": [
+    {
+      "tx_hash": "5xKpQwRtY8uZaBcDeFgHiJkLmNoPqRsTuVwXyZ123456789abcdefABCDEF",
+      "event_type": "buy",
+      "timestamp": 1789363100,
+      "token": {
+        "address": "CeSFzoAqSMXMgodeLzrTMe3V5MdV5Nhinehedxohpump",
+        "symbol": "Humanity",
+        "decimals": 6
+      },
+      "token_amount": "1523000.5",
+      "cost_sol": "0.85",
+      "cost_usd": "127.5",
+      "price_usd": "0.0000837",
+      "gas_usd": "0.42"
+    },
+    {
+      "tx_hash": "3nHvBqWsXeYzAbCdEfGhIjKlMnOpQrStUvWxYz987654321fedcbaFEDCBA",
+      "event_type": "sell",
+      "timestamp": 1789363400,
+      "token": {
+        "address": "CeSFzoAqSMXMgodeLzrTMe3V5MdV5Nhinehedxohpump",
+        "symbol": "Humanity",
+        "decimals": 6
+      },
+      "token_amount": "761500.25",
+      "cost_sol": "0.52",
+      "cost_usd": "78.0",
+      "price_usd": "0.0001024",
+      "gas_usd": "0.38"
+    },
+    {
+      "tx_hash": "9tRfGbCdEfHiJkLmNoPqRsTuVwXyZaBcDeFgHi123456789abcdefABCDEF00",
+      "event_type": "transfer",
+      "timestamp": 1789363500,
+      "token": {
+        "address": "So11111111111111111111111111111111111111112",
+        "symbol": "WSOL",
+        "decimals": 9
+      },
+      "token_amount": "2.0",
+      "cost_sol": "2.0",
+      "cost_usd": "300.0",
+      "price_usd": "150.0",
+      "gas_usd": "0.05"
+    }
+  ]
+}
