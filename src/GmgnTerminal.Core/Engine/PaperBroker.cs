@@ -143,6 +143,56 @@ public class PaperBroker : ITradeExecutor
         }
     }
 
+    public ExecResult Sell(SellOrder o)
+    {
+        lock (_gate)
+        {
+            if (o.PriceUsd <= 0m || o.SolUsd <= 0m)
+                return ExecResult.Fail("invalid price", _balanceSol);
+            if (!_positions.TryGetValue(o.Mint, out var pos) || !pos.IsOpen)
+                return ExecResult.Fail("no open position", _balanceSol);
+
+            var fraction = Math.Clamp(o.Fraction, 0m, 1m);
+            var fullExit = fraction >= 1m - DustQty;
+            var qtyToSell = fullExit ? pos.Quantity : Round(pos.Quantity * fraction, 9);
+            if (qtyToSell <= DustQty)
+                return ExecResult.Fail("nothing to sell (dust)", _balanceSol);
+
+            var execPriceUsd = o.PriceUsd * (1m - o.SlippagePercent / 100m);
+            var usdGross = qtyToSell * execPriceUsd;
+            var solGross = usdGross / o.SolUsd;
+            var feeSol = Round(solGross * o.FeePercent / 100m, 9);
+            var solReceived = solGross - feeSol;
+            if (solReceived <= 0m)
+                return ExecResult.Fail("fee eats the fill", _balanceSol);
+
+            // proportional cost basis for the sold slice
+            var ratio = qtyToSell / pos.Quantity;
+            var basisUsd = fullExit ? pos.CostUsd : Round(pos.CostUsd * ratio, 10);
+            var basisSol = fullExit ? pos.CostSol : Round(pos.CostSol * ratio, 10);
+            var realizedUsd = usdGross - basisUsd;
+            var realizedSol = realizedUsd / o.SolUsd;
+
+            _balanceSol += solReceived;
+            pos.Quantity -= qtyToSell;
+            pos.CostUsd -= basisUsd;
+            pos.CostSol -= basisSol;
+            pos.RealizedSol += realizedSol;
+            pos.LastPriceUsd = execPriceUsd;
+            pos.LastSolUsd = o.SolUsd;
+            if (pos.Quantity <= DustQty)
+            {
+                pos.Quantity = 0m;
+                pos.CostUsd = 0m;
+                pos.CostSol = 0m;
+            }
+
+            var fill = NewFill(o.Mint, pos.Symbol, TradeSide.Sell, solReceived, qtyToSell, execPriceUsd, o.SolUsd, feeSol, realizedSol, o.LeaderAddress, o.LeaderTxHash);
+            Log.Info($"paper SELL {pos.Symbol} {qtyToSell:F2} tok for {solReceived:F4} SOL, realized {realizedSol:F4} SOL, {(pos.IsOpen ? "bag left" : "position closed")}");
+            return new ExecResult { Ok = true, Fill = fill, BalanceSol = _balanceSol };
+        }
+    }
+
     // called by the position tracker on every price update
     public void MarkPrice(string mint, decimal priceUsd, decimal solUsd)
     {
