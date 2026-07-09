@@ -21,6 +21,8 @@ public class CopyEngine
 
     private readonly object _gate = new();
     private readonly Dictionary<string, long> _watermarks = new();     // leader -> last processed ts
+    private readonly HashSet<string> _seen = new();                    // dedupe keys
+    private readonly Queue<string> _seenOrder = new();
 
     private CancellationTokenSource? _cts;
     private volatile bool _running;
@@ -123,7 +125,7 @@ public class CopyEngine
             return;
         }
 
-        // chronological order, then watermark
+        // chronological order, then watermark + dedupe
         var fresh = new List<Trade>();
         lock (_gate)
         {
@@ -131,10 +133,13 @@ public class CopyEngine
             foreach (var t in activity.OrderBy(t => t.Timestamp))
             {
                 if (t.Timestamp < watermark) continue;
+                if (!_seen.Add(t.DedupeKey)) continue;
+                _seenOrder.Enqueue(t.DedupeKey);
                 fresh.Add(t);
             }
             if (fresh.Count > 0)
                 _watermarks[leaderAddress] = fresh[^1].Timestamp;
+            PruneSeen();
         }
 
         foreach (var trade in fresh)
@@ -289,12 +294,20 @@ public class CopyEngine
         await Task.Delay(Random.Shared.Next(min, max + 1), ct);
     }
 
+    private void PruneSeen()
+    {
+        while (_seen.Count > DedupeCap && _seenOrder.Count > 0)
+            _seen.Remove(_seenOrder.Dequeue());
+    }
+
     // tests need a way to clear state between runs
     internal void ResetState()
     {
         lock (_gate)
         {
             _watermarks.Clear();
+            _seen.Clear();
+            _seenOrder.Clear();
             _cachedSolUsd = 0;
         }
     }
