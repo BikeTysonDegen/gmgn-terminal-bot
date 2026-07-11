@@ -156,6 +156,19 @@ public class CopyEngine
         var cfg = _config();
         var t = cfg.Trading;
 
+        // --- filters ---
+        // min leader sol applies to buys only: a leader trimming in small
+        // chunks must still trigger our proportional exit
+        if (trade.Side == TradeSide.Buy)
+        {
+            var minSol = leader.MinSol > 0 ? leader.MinSol : t.MinLeaderSol;
+            if (trade.SolAmount < minSol)
+                return Skip(leader, trade, $"leader size {trade.SolAmount:F3} < min {minSol:F3} SOL");
+        }
+
+        if (t.SkipMints.Contains(trade.Mint))
+            return Skip(leader, trade, "mint is in skip list");
+
         if (trade.Side == TradeSide.Buy)
             return await CopyBuyAsync(leader, trade, t, ct);
         return await CopySellAsync(leader, trade, t, ct);
