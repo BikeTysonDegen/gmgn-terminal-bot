@@ -180,7 +180,9 @@ public class CopyEngine
         if (!broker.HasOpenPosition(trade.Mint) && broker.OpenPositionCount >= t.MaxOpenPositions)
             return Skip(leader, trade, $"max open positions ({t.MaxOpenPositions})");
 
-        var size = t.FixedSizeSol;
+        var size = t.SizeMode == SizeMode.Fixed
+            ? t.FixedSizeSol
+            : trade.SolAmount * leader.Multiplier;
         if (size > t.MaxOurSolPerTrade) size = t.MaxOurSolPerTrade;
         if (size > broker.BalanceSol) size = broker.BalanceSol;
         if (size < 0.0005m)
@@ -206,7 +208,7 @@ public class CopyEngine
         if (!result.Ok)
             return Skip(leader, trade, $"buy failed: {result.Error}");
 
-        var mode = "fixed";
+        var mode = t.SizeMode == SizeMode.Fixed ? "fixed" : $"x{leader.Multiplier:0.##} prop";
         Log.Info($"copied BUY {leader.Display} -> {trade.Symbol} {size:F4} SOL ({mode})");
         return new CopyEvent
         {
