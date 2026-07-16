@@ -7,6 +7,11 @@ namespace GmgnTerminal.Core.Engine;
 
 // polls leader activity from ITradeSource, filters, sizes and mirrors trades
 // through ITradeExecutor. emits events for the UI feed.
+//
+// sell fraction: gmgn doesn't tell us the leader's bag size per token, so the
+// engine tracks cumulative leader buys/sells per (leader, mint) since start.
+// fraction = sold / tracked bag. bag unknown (leader bought before we
+// started) => treat as full exit.
 public class CopyEngine
 {
     private const int ActivityLimit = 25;
@@ -23,6 +28,7 @@ public class CopyEngine
     private readonly Dictionary<string, long> _watermarks = new();     // leader -> last processed ts
     private readonly HashSet<string> _seen = new();                    // dedupe keys
     private readonly Queue<string> _seenOrder = new();
+    private readonly Dictionary<(string leader, string mint), decimal> _leaderBags = new();
 
     private CancellationTokenSource? _cts;
     private volatile bool _running;
@@ -156,6 +162,10 @@ public class CopyEngine
         var cfg = _config();
         var t = cfg.Trading;
 
+        // fraction must be computed BEFORE this sell shrinks the tracked bag
+        var sellFraction = trade.Side == TradeSide.Sell ? SellFraction(leader.Address, trade) : 1m;
+        TrackLeaderBag(leader.Address, trade);
+
         // --- filters ---
         // min leader sol applies to buys only: a leader trimming in small
         // chunks must still trigger our proportional exit
@@ -171,7 +181,7 @@ public class CopyEngine
 
         if (trade.Side == TradeSide.Buy)
             return await CopyBuyAsync(leader, trade, t, ct);
-        return await CopySellAsync(leader, trade, t, ct);
+        return await CopySellAsync(leader, trade, t, sellFraction, ct);
     }
 
     private async Task<CopyEvent> CopyBuyAsync(Leader leader, Trade trade, TradingConfig t, CancellationToken ct)
@@ -220,7 +230,7 @@ public class CopyEngine
         };
     }
 
-    private async Task<CopyEvent> CopySellAsync(Leader leader, Trade trade, TradingConfig t, CancellationToken ct)
+    private async Task<CopyEvent> CopySellAsync(Leader leader, Trade trade, TradingConfig t, decimal fraction, CancellationToken ct)
     {
         if (!_executor.HasOpenPosition(trade.Mint))
             return Skip(leader, trade, "sell ignored, no open position");
@@ -232,7 +242,7 @@ public class CopyEngine
         var result = _executor.Sell(new SellOrder
         {
             Mint = trade.Mint,
-            Fraction = 1m,
+            Fraction = fraction,
             PriceUsd = priceUsd,
             SolUsd = solUsd,
             SlippagePercent = t.SlippagePercent,
@@ -244,13 +254,13 @@ public class CopyEngine
         if (!result.Ok)
             return Skip(leader, trade, $"sell failed: {result.Error}");
 
-        Log.Info($"copied SELL {leader.Display} -> {trade.Symbol} full exit, realized {result.Fill!.RealizedSol:F4} SOL");
+        Log.Info($"copied SELL {leader.Display} -> {trade.Symbol} {fraction * 100:F0}% of bag, realized {result.Fill!.RealizedSol:F4} SOL");
         return new CopyEvent
         {
             LeaderTrade = trade,
             LeaderDisplay = leader.Display,
             Action = CopyAction.SellCopied,
-            Detail = `$"full exit, realized {result.Fill.RealizedSol:F4} SOL",
+            Detail = $"{fraction * 100:F0}% of bag, realized {result.Fill.RealizedSol:F4} SOL",
             OurFill = result.Fill
         };
     }
@@ -265,6 +275,27 @@ public class CopyEngine
             Action = CopyAction.Skipped,
             Detail = reason
         };
+    }
+
+    private void TrackLeaderBag(string leaderAddress, Trade trade)
+    {
+        lock (_gate)
+        {
+            var key = (leaderAddress, trade.Mint);
+            var bag = _leaderBags.GetValueOrDefault(key);
+            bag = trade.Side == TradeSide.Buy ? bag + trade.TokenAmount : bag - trade.TokenAmount;
+            _leaderBags[key] = Math.Max(0m, bag);
+        }
+    }
+
+    internal decimal SellFraction(string leaderAddress, Trade trade)
+    {
+        lock (_gate)
+        {
+            var bag = _leaderBags.GetValueOrDefault((leaderAddress, trade.Mint));
+            if (bag <= 0m || trade.TokenAmount >= bag) return 1m;
+            return Math.Clamp(trade.TokenAmount / bag, 0.01m, 1m);
+        }
     }
 
     private async Task<decimal> FreshPriceAsync(Trade trade, CancellationToken ct)
@@ -323,6 +354,7 @@ public class CopyEngine
             _watermarks.Clear();
             _seen.Clear();
             _seenOrder.Clear();
+            _leaderBags.Clear();
             _cachedSolUsd = 0;
         }
     }
