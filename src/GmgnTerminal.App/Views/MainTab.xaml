@@ -1,0 +1,85 @@
+<UserControl x:Class="GmgnTerminal.App.Views.MainTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid Margin="0,10,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="360"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- ============ left column: leaders + positions ============ -->
+        <Grid Grid.Column="0" Margin="0,0,12,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- leaders card -->
+            <Border Grid.Row="0" Style="{StaticResource Card}">
+                <StackPanel>
+                    <Grid Margin="0,0,0,10">
+                        <TextBlock Text="LEADERS" Style="{StaticResource HeaderText}"/>
+                        <TextBlock Text="{Binding Leaders.Count, StringFormat={}{0} wallet(s)}"
+                                   Style="{StaticResource DimText}" HorizontalAlignment="Right" FontSize="11"/>
+                    </Grid>
+
+                    <DataGrid x:Name="LeadersGrid" ItemsSource="{Binding Leaders}"
+                              SelectedItem="{Binding SelectedLeader}"
+                              Style="{StaticResource FeedGrid}"
+                              IsReadOnly="False" MaxHeight="180"
+                              HeadersVisibility="Column">
+                        <DataGrid.Columns>
+                            <DataGridCheckBoxColumn Binding="{Binding Enabled, UpdateSourceTrigger=PropertyChanged}"
+                                                    Width="34" Header=""/>
+                            <DataGridTextColumn Binding="{Binding Display, Mode=OneWay}" Header="WALLET" Width="*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource MonoText}">
+                                        <Setter Property="ToolTip" Value="{Binding Address}"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Binding="{Binding Alias, UpdateSourceTrigger=LostFocus}" Header="ALIAS" Width="90"/>
+                            <DataGridTextColumn Binding="{Binding Multiplier, UpdateSourceTrigger=LostFocus, StringFormat=F2}" Header="MULT" Width="56"/>
+                            <DataGridTextColumn Binding="{Binding MinSol, UpdateSourceTrigger=LostFocus, StringFormat=F2}" Header="MIN SOL" Width="70"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Text="{Binding NewLeaderAddress, UpdateSourceTrigger=PropertyChanged}"
+                                 FontFamily="Cascadia Mono, Consolas" FontSize="12"
+                                 ToolTip="solana wallet address to copy"/>
+                        <Button Grid.Column="1" Content="ADD" Style="{StaticResource PrimaryButton}"
+                                Command="{Binding AddLeaderCommand}" Margin="8,0,0,0" Padding="14,6"/>
+                    </Grid>
+                    <Grid Margin="0,8,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Text="{Binding NewLeaderAlias, UpdateSourceTrigger=PropertyChanged}"
+                                 FontSize="12" ToolTip="optional alias"/>
+                        <Button Grid.Column="1" Content="REMOVE" Style="{StaticResource DangerButton}"
+                                Command="{Binding RemoveLeaderCommand}" Margin="8,0,0,0" Padding="14,6"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+        </Grid>
+
+        <!-- ============ right column: feed + stats ============ -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+
+        </Grid>
+    </Grid>
+</UserControl>

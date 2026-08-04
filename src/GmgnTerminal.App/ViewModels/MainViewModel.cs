@@ -95,15 +95,15 @@ public class MainViewModel : Observable
         RemoveLeaderCommand = new RelayCommand(RemoveLeader, () => SelectedLeader != null);
         ClearFeedCommand = new RelayCommand(() => Ui(Feed.Clear));
 
-        _host.StatusChanged += running => { IsRunning = running; OnPropertyChanged(nameof(StartStopText)); OnPropertyChanged(nameof(EngineStateText)); };
-        _host.Tracker.PricesUpdated += () => UpdateMarket();
+        _host.StatusChanged += running => Ui(() => { IsRunning = running; OnPropertyChanged(nameof(StartStopText)); OnPropertyChanged(nameof(EngineStateText)); });
+        _host.Tracker.PricesUpdated += () => Ui(UpdateMarket);
         _host.CopyDecided += OnCopyDecided;
         _host.Rebuilt += () => Ui(() =>
         {
             SyncPositions();
             UpdateMarket();
         });
-        LogBus.EntryAdded += entry => LastLogText = $"{entry.Time:HH:mm:ss} {entry.Level.ToString().ToLower()}: {entry.Message}";
+        LogBus.EntryAdded += entry => Ui(() => LastLogText = $"{entry.Time:HH:mm:ss} {entry.Level.ToString().ToLower()}: {entry.Message}");
 
         UpdateMarket();
     }
