@@ -70,6 +70,64 @@
                 </StackPanel>
             </Border>
 
+            <!-- positions card -->
+            <Border Grid.Row="2" Style="{StaticResource Card}" Margin="0,12,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="OPEN POSITIONS" Style="{StaticResource HeaderText}" Margin="0,0,0,10"/>
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding Positions}" Style="{StaticResource FeedGrid}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding Symbol}" Header="TOKEN" Width="76">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="FontWeight" Value="SemiBold"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Binding="{Binding Quantity, StringFormat=N0}" Header="QTY" Width="*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource MonoText}"/>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Binding="{Binding ValueSol, StringFormat=F4}" Header="VAL SOL" Width="70">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource MonoText}"/>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Binding="{Binding PnlPercent, StringFormat=F1}" Header="PNL %" Width="62">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource MonoText}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding PnlPercentSign}" Value="True">
+                                                <Setter Property="Foreground" Value="{StaticResource Buy}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding PnlPercentSign}" Value="False">
+                                                <Setter Property="Foreground" Value="{StaticResource Sell}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <TextBlock Grid.Row="1" Text="no open positions"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,24,0,0">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource DimText}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Positions.Count}" Value="0">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </Grid>
+            </Border>
         </Grid>
 
         <!-- ============ right column: feed + stats ============ -->
