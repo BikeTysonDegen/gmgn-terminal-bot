@@ -215,6 +215,50 @@
                 </Grid>
             </Border>
 
+            <!-- stats strip -->
+            <Border Grid.Row="1" Style="{StaticResource Card}" Margin="0,12,0,0" Padding="16,12">
+                <UniformGrid Rows="1" Columns="7">
+                    <StackPanel>
+                        <TextBlock Text="BALANCE" Style="{StaticResource StatLabel}"/>
+                        <TextBlock Text="{Binding BalanceText}" Style="{StaticResource StatValue}" Foreground="{StaticResource Accent}"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="EQUITY" Style="{StaticResource StatLabel}"/>
+                        <TextBlock Text="{Binding EquityText}" Style="{StaticResource StatValue}"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="UNREALIZED" Style="{StaticResource StatLabel}"/>
+                        <TextBlock Text="{Binding UnrealizedText}" Style="{StaticResource StatValue}"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="REALIZED" Style="{StaticResource StatLabel}"/>
+                        <TextBlock Text="{Binding RealizedText}" Style="{StaticResource StatValue}"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="COPIED B / S" Style="{StaticResource StatLabel}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource StatValue}" Foreground="{StaticResource Buy}"
+                                       Text="{Binding Stats.BuysCopied}"/>
+                            <TextBlock Style="{StaticResource StatValue}" Foreground="{StaticResource TextSecondary}" Text=" / "/>
+                            <TextBlock Style="{StaticResource StatValue}" Foreground="{StaticResource Sell}"
+                                       Text="{Binding Stats.SellsCopied}"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="SKIPPED / SEEN" Style="{StaticResource StatLabel}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource StatValue}" Text="{Binding Stats.Skipped}"/>
+                            <TextBlock Style="{StaticResource StatValue}" Foreground="{StaticResource TextSecondary}" Text=" / "/>
+                            <TextBlock Style="{StaticResource StatValue}" Foreground="{StaticResource TextSecondary}"
+                                       Text="{Binding Stats.LeaderTrades}"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="WIN RATE" Style="{StaticResource StatLabel}"/>
+                        <TextBlock Style="{StaticResource StatValue}" Text="{Binding Stats.WinRatePct, StringFormat=F0}"/>
+                    </StackPanel>
+                </UniformGrid>
+            </Border>
         </Grid>
     </Grid>
 </UserControl>
