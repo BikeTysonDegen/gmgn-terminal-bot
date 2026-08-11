@@ -1,0 +1,114 @@
+<UserControl x:Class="GmgnTerminal.App.Views.TradingTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="0,10,0,0" MaxWidth="860" HorizontalAlignment="Left">
+
+            <!-- sizing -->
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="SIZING" Style="{StaticResource HeaderText}" Margin="0,0,0,12"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="240"/>
+                            <ColumnDefinition Width="240"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,16,0">
+                            <TextBlock Text="Size mode" Style="{StaticResource FieldLabel}"/>
+                            <ComboBox ItemsSource="{Binding SizeModes}" SelectedItem="{Binding SizeMode}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="0,0,16,0">
+                            <TextBlock Text="Fixed size, SOL" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding FixedSizeSol, UpdateSourceTrigger=LostFocus, StringFormat=F4}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Max our SOL per trade" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding MaxOurSolPerTrade, UpdateSourceTrigger=LostFocus, StringFormat=F4}"/>
+                        </StackPanel>
+                    </Grid>
+                    <TextBlock Style="{StaticResource DimText}" Margin="0,10,0,0" TextWrapping="Wrap"
+                               Text="Fixed: every copy buy is the same size. Proportional: leader size × per-leader multiplier (set in the leaders grid). Max per trade caps both."/>
+                </StackPanel>
+            </Border>
+
+            <!-- filters -->
+            <Border Style="{StaticResource Card}" Margin="0,12,0,0">
+                <StackPanel>
+                    <TextBlock Text="FILTERS" Style="{StaticResource HeaderText}" Margin="0,0,0,12"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="240"/>
+                            <ColumnDefinition Width="240"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,16,0">
+                            <TextBlock Text="Min leader SOL (buys)" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding MinLeaderSol, UpdateSourceTrigger=LostFocus, StringFormat=F3}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="0,0,16,0">
+                            <TextBlock Text="Max open positions" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding MaxOpenPositions, UpdateSourceTrigger=LostFocus}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Copy delay, ms (min / max)" Style="{StaticResource FieldLabel}"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" Text="{Binding DelayMinMs, UpdateSourceTrigger=LostFocus}"/>
+                                <TextBox Grid.Column="2" Text="{Binding DelayMaxMs, UpdateSourceTrigger=LostFocus}"/>
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+                    <TextBlock Text="Skip mints (one per line)" Style="{StaticResource FieldLabel}" Margin="0,14,0,4"/>
+                    <TextBox Text="{Binding SkipMintsText, UpdateSourceTrigger=LostFocus}"
+                             AcceptsReturn="True" TextWrapping="Wrap" MinHeight="56" MaxHeight="120"
+                             FontFamily="Cascadia Mono, Consolas" FontSize="12"
+                             VerticalScrollBarVisibility="Auto"/>
+                    <TextBlock Style="{StaticResource DimText}" Margin="0,8,0,0" TextWrapping="Wrap"
+                               Text="Min leader SOL only gates entries — leader sells are always mirrored so you can't get stuck in a bag. Random delay spreads your fills after the leader's."/>
+                </StackPanel>
+            </Border>
+
+            <!-- execution -->
+            <Border Style="{StaticResource Card}" Margin="0,12,0,0">
+                <StackPanel>
+                    <TextBlock Text="PAPER EXECUTION" Style="{StaticResource HeaderText}" Margin="0,0,0,12"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="240"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,16,0">
+                            <TextBlock Text="Slippage, %" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding SlippagePercent, UpdateSourceTrigger=LostFocus, StringFormat=F2}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Simulated fee, %" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding FeePercent, UpdateSourceTrigger=LostFocus, StringFormat=F2}"/>
+                        </StackPanel>
+                    </Grid>
+                    <Border Background="{StaticResource PanelBg2}" BorderBrush="{StaticResource Border}" BorderThickness="1" CornerRadius="3"
+                            Padding="10,8" Margin="0,14,0,0">
+                        <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="{StaticResource TextSecondary}"
+                                   Text="v0.1 executes on the paper broker only: fills at fetched market price ± slippage, minus fee. GMGN has no public trading API — a live executor can be plugged into ITradeExecutor later."/>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- actions -->
+            <StackPanel Orientation="Horizontal" Margin="0,14,0,4">
+                <Button Content="SAVE TRADING SETTINGS" Style="{StaticResource PrimaryButton}"
+                        Command="{Binding SaveTradingCommand}" Padding="18,8"/>
+                <Button Content="RESET SESSION" Style="{StaticResource DangerButton}" Margin="10,0,0,0"
+                        Command="{Binding ResetSessionCommand}" Padding="18,8"/>
+                <TextBlock Text="{Binding SettingsStatus}" Style="{StaticResource DimText}"
+                           VerticalAlignment="Center" Margin="16,0,0,0"/>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
