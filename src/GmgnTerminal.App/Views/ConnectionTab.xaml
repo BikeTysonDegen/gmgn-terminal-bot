@@ -1,0 +1,93 @@
+<UserControl x:Class="GmgnTerminal.App.Views.ConnectionTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="0,10,0,0" MaxWidth="860" HorizontalAlignment="Left">
+
+            <!-- endpoint -->
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="GMGN ENDPOINT" Style="{StaticResource HeaderText}" Margin="0,0,0,12"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="160"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,16,0">
+                            <TextBlock Text="Base URL" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding BaseUrl, UpdateSourceTrigger=LostFocus}"
+                                     FontFamily="Cascadia Mono, Consolas" FontSize="12"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Timeout, sec" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding RequestTimeoutSec, UpdateSourceTrigger=LostFocus}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+                        <Button Content="TEST CONNECTION" Command="{Binding TestConnectionCommand}" Padding="18,8"/>
+                        <TextBlock Text="{Binding TestResult}" VerticalAlignment="Center" Margin="14,0,0,0"
+                                   FontFamily="Cascadia Mono, Consolas" FontSize="12"
+                                   Foreground="{StaticResource TextSecondary}" TextWrapping="Wrap" MaxWidth="480"/>
+                    </StackPanel>
+                    <TextBlock Style="{StaticResource DimText}" Margin="0,10,0,0" TextWrapping="Wrap"
+                               Text="Most gmgn endpoints sit behind Cloudflare with a browser TLS check: rank/token_info usually pass, wallet activity often gets challenged. The bot logs every request and response — check the Logs tab."/>
+                </StackPanel>
+            </Border>
+
+            <!-- proxy -->
+            <Border Style="{StaticResource Card}" Margin="0,12,0,0">
+                <StackPanel>
+                    <TextBlock Text="PROXY" Style="{StaticResource HeaderText}" Margin="0,0,0,12"/>
+                    <TextBox Text="{Binding Proxy, UpdateSourceTrigger=LostFocus}"
+                             FontFamily="Cascadia Mono, Consolas" FontSize="12"/>
+                    <TextBlock Style="{StaticResource DimText}" Margin="0,8,0,0" TextWrapping="Wrap"
+                               Text="Full http(s) proxy URL, e.g. http://user:pass@host:port — used for all gmgn requests. socks5 is not supported. Credentials are masked in logs. Empty = direct connection."/>
+                </StackPanel>
+            </Border>
+
+            <!-- polling -->
+            <Border Style="{StaticResource Card}" Margin="0,12,0,0">
+                <StackPanel>
+                    <TextBlock Text="POLLING" Style="{StaticResource HeaderText}" Margin="0,0,0,12"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="240"/>
+                            <ColumnDefinition Width="240"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,16,0">
+                            <TextBlock Text="Leader activity, sec" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding ActivityPollSec, UpdateSourceTrigger=LostFocus}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="0,0,16,0">
+                            <TextBlock Text="Position prices, sec" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding PricePollSec, UpdateSourceTrigger=LostFocus}"/>
+                        </StackPanel>
+                    </Grid>
+                    <TextBlock Style="{StaticResource DimText}" Margin="0,8,0,0"
+                               Text="Applied on next START (poll loops are created when the engine starts)."/>
+                </StackPanel>
+            </Border>
+
+            <!-- mode -->
+            <Border Style="{StaticResource Card}" Margin="0,12,0,0">
+                <StackPanel>
+                    <TextBlock Text="DATA SOURCE" Style="{StaticResource HeaderText}" Margin="0,0,0,12"/>
+                    <CheckBox Content="Offline data feed (simulate gmgn responses locally)" IsChecked="{Binding OfflineFeed}"/>
+                    <TextBlock Style="{StaticResource DimText}" Margin="0,8,0,0" TextWrapping="Wrap"
+                               Text="The offline feed replays realistic leader activity and price walks for real solana mints — the whole copy pipeline runs without network. Uncheck to hit the live gmgn API (whatever Cloudflare lets through). Switching resets the paper session."/>
+                </StackPanel>
+            </Border>
+
+            <!-- actions -->
+            <StackPanel Orientation="Horizontal" Margin="0,14,0,4">
+                <Button Content="SAVE CONNECTION" Style="{StaticResource PrimaryButton}"
+                        Command="{Binding SaveConnectionCommand}" Padding="18,8"/>
+                <TextBlock Text="{Binding SettingsStatus}" Style="{StaticResource DimText}"
+                           VerticalAlignment="Center" Margin="16,0,0,0"/>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
