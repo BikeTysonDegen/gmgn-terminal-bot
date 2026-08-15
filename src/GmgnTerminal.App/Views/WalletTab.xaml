@@ -1,0 +1,66 @@
+<UserControl x:Class="GmgnTerminal.App.Views.WalletTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="0,10,0,0" MaxWidth="860" HorizontalAlignment="Left">
+
+            <!-- paper wallet -->
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="PAPER WALLET" Style="{StaticResource HeaderText}" Margin="0,0,0,12"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="240"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,16,0">
+                            <TextBlock Text="Balance, SOL" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding PaperBalanceSol, UpdateSourceTrigger=LostFocus, StringFormat=F4}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
+                            <Button Content="APPLY &amp; RESET SESSION" Style="{StaticResource PrimaryButton}"
+                                    Command="{Binding ApplyBalanceCommand}" Padding="16,7"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" VerticalAlignment="Bottom" Margin="16,0,0,2">
+                            <TextBlock Text="{Binding SettingsStatus}" Style="{StaticResource DimText}" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Grid>
+                    <TextBlock Style="{StaticResource DimText}" Margin="0,10,0,0" TextWrapping="Wrap"
+                               Text="Applying a new balance resets the paper session: open positions, fills and stats are cleared."/>
+                </StackPanel>
+            </Border>
+
+            <!-- live wallet stub -->
+            <Border Style="{StaticResource Card}" Margin="0,12,0,0" Opacity="0.65">
+                <StackPanel>
+                    <TextBlock Text="LIVE WALLET (NOT AVAILABLE IN v0.1)" Style="{StaticResource HeaderText}" Margin="0,0,0,12"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" IsEnabled="False" FontFamily="Cascadia Mono, Consolas" FontSize="12"
+                                 Text="{Binding PrivateKey, UpdateSourceTrigger=LostFocus}"
+                                 ToolTip="base58 secret key — stored locally in config.json only"/>
+                        <Button Grid.Column="1" Content="IMPORT" IsEnabled="False" Margin="8,0,0,0" Padding="16,7"/>
+                    </Grid>
+                    <TextBlock Style="{StaticResource DimText}" Margin="0,10,0,0" TextWrapping="Wrap"
+                               Text="GMGN has no public trade-execution API — there is nothing to sign against yet. The executor is an interface (ITradeExecutor): when an API opens up (or a direct on-chain route is added), a live broker plugs in here and this field starts working. Keys would stay in config.json on this machine and never leave it."/>
+                </StackPanel>
+            </Border>
+
+            <!-- warning -->
+            <Border Background="{StaticResource PanelBg}" BorderBrush="#3A3440" BorderThickness="1" CornerRadius="3"
+                    Padding="12" Margin="0,12,0,4">
+                <StackPanel>
+                    <TextBlock Text="RISK" Foreground="{StaticResource Sell}"
+                               FontWeight="SemiBold" FontSize="11.5" Margin="0,0,0,6"/>
+                    <TextBlock Foreground="{StaticResource TextSecondary}" FontSize="12.5" TextWrapping="Wrap"
+                               Text="Copy trading memecoins is not a stable strategy: a good-looking leader can torch your deposit on the next candle, and paper results never fully match live fills. When (if) live execution ever ships here — use a fresh wallet, keep balances small, and never import your main key into any bot, this one included."/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
