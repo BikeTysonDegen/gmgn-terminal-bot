@@ -108,7 +108,17 @@ public class SettingsViewModel : Observable
     private void SaveConnection()
     {
         AppServices.SaveConfig();
-        SettingsStatus = $"connection saved ({DateTime.Now:HH:mm:ss});"
+        if (OfflineFeed != _host.IsOffline)
+        {
+            // source type changed — rebuild host (paper session resets)
+            AppServices.Host.Rebuild(Cfg);
+            SettingsStatus = "connection saved, host rebuilt — paper session was reset";
+            Log.Warn("data source toggled, host rebuilt (positions and balance reset to config)");
+        }
+        else
+        {
+            SettingsStatus = $"connection saved ({DateTime.Now:HH:mm:ss}). poll intervals apply on next START";
+        }
     }
 
     private async void TestConnection()
