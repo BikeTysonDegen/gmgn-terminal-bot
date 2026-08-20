@@ -136,13 +136,11 @@ public class MainViewModel : Observable
 
     private void OnCopyDecided(CopyEvent ev)
     {
-        Ui(() =>
-        {
-            Feed.Insert(0, FeedRow.From(ev));
-            while (Feed.Count > FeedCap) Feed.RemoveAt(Feed.Count - 1);
-            SyncPositions();
-            UpdateMarket();
-        });
+        // dispatcher hop made the feed lag on busy polls, trying direct
+        Feed.Insert(0, FeedRow.From(ev));
+        while (Feed.Count > FeedCap) Feed.RemoveAt(Feed.Count - 1);
+        SyncPositions();
+        UpdateMarket();
     }
 
     private void ToggleEngine()
