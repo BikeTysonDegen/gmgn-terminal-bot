@@ -37,7 +37,7 @@
     <Style x:Key="Card" TargetType="Border">
         <Setter Property="Background" Value="{StaticResource PanelBg}"/>
         <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
-        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="2"/>
         <Setter Property="Padding" Value="8"/>
     </Style>
@@ -48,7 +48,7 @@
         <Setter Property="Background" Value="{StaticResource PanelBg2}"/>
         <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
         <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
-        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="12,6"/>
         <Setter Property="FontSize" Value="12.5"/>
         <Setter Property="FontWeight" Value="Normal"/>
@@ -137,7 +137,7 @@
         <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
         <Setter Property="CaretBrush" Value="{StaticResource Accent}"/>
         <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
-        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="8,6"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="SelectionBrush" Value="{StaticResource AccentDim}"/>
@@ -464,7 +464,7 @@
     <Style x:Key="Chip" TargetType="Border">
         <Setter Property="Background" Value="{StaticResource PanelBg2}"/>
         <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
-        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="0"/>
         <Setter Property="Padding" Value="10,4"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
