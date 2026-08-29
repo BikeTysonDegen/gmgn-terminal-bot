@@ -97,7 +97,7 @@
                                     <Style TargetType="TextBlock" BasedOn="{StaticResource MonoText}"/>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Binding="{Binding PnlPercent, StringFormat=F1}" Header="PNL %" Width="62">
+                            <DataGridTextColumn Binding="{Binding PnlPercent, StringFormat=F1}" Header="PNL %" Width="66">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock" BasedOn="{StaticResource MonoText}">
                                         <Style.Triggers>
