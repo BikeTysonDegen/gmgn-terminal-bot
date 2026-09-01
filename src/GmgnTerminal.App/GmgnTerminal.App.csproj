@@ -12,6 +12,11 @@
     <UseWPF>true</UseWPF>
     <AssemblyName>gmgn-terminal</AssemblyName>
     <Product>gmgn-terminal</Product>
+    <Version>0.1.0</Version>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\gmgn-mark.png" />
+  </ItemGroup>
 
 </Project>
