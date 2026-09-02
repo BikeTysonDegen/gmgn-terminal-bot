@@ -51,14 +51,32 @@ public class OfflineFeed : ITradeSource, IPriceSource
         public double Momentum; // >0 buys more likely, <0 sells
     }
 
-    public OfflineFeed(OfflineFeedOptions? opts = null, Func<DateTimeOffset>? clock = null)
+    public OfflineFeed(OfflineFeedOptions? opts = null, Func<DateTimeOffset>? clock = null,
+        IReadOnlyList<TokenInfo>? seedTokens = null)
     {
         _opts = opts ?? new OfflineFeedOptions();
         _clock = clock ?? (() => DateTimeOffset.UtcNow);
         _globalRng = new Random(_opts.Seed);
         _solUsd = _opts.StartSolUsd;
 
-        {            foreach (var (symbol, name, mint, price) in RealTokens)
+        if (seedTokens != null && seedTokens.Count > 0)
+        {
+            foreach (var t in seedTokens.Take(10))
+            {
+                var price = t.PriceUsd > 0 ? t.PriceUsd : 0.0001m;
+                _tokens[t.Mint] = new FeedToken
+                {
+                    Mint = t.Mint,
+                    Symbol = t.Symbol,
+                    Name = t.Name,
+                    PriceUsd = price,
+                    Momentum = (_globalRng.NextDouble() - 0.45) * 0.4
+                };
+            }
+        }
+        else
+        {
+            foreach (var (symbol, name, mint, price) in RealTokens)
             {
                 _tokens[mint] = new FeedToken
                 {

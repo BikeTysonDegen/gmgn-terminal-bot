@@ -33,7 +33,7 @@ public class BotHost : IDisposable
     public event Action<bool>? StatusChanged;
     public event Action? Rebuilt;
 
-    public BotHost(Func<AppConfig> configProvider)
+    public BotHost(Func<AppConfig> configProvider, Func<IReadOnlyList<TokenInfo>?>? offlineCatalog = null)
     {
         _configProvider = configProvider;
         _offlineCatalog = offlineCatalog;
@@ -89,7 +89,8 @@ public class BotHost : IDisposable
         Engine.Stop();
         Tracker.Stop();
     }
-
+
+    public void NotifyLeaderAdded(Leader leader) => Engine.AddLeaderLoop(leader);
 
     private void OnLeaderTrade(Trade trade, string leaderDisplay)
     {
