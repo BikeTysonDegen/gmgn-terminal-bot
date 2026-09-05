@@ -35,7 +35,8 @@ public static class AppServices
             var opts = GmgnApiOptions.FromConfig(Config.Connection);
             opts.TimeoutSec = 6;
             using var client = new GmgnApiClient(opts);
-            var tokens = client.GetTrendingAsync("1h", 12).GetAwaiter().GetResult();
+            // Task.Run: no WPF sync context inside, otherwise .GetAwaiter().GetResult() deadlocks
+            var tokens = Task.Run(() => client.GetTrendingAsync("1h", 12)).GetAwaiter().GetResult();
             if (tokens.Count > 0)
             {
                 LiveCatalog = tokens;
