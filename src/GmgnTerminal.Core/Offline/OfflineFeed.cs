@@ -61,7 +61,7 @@ public class OfflineFeed : ITradeSource, IPriceSource
 
         if (seedTokens != null && seedTokens.Count > 0)
         {
-            foreach (var t in seedTokens.Take(10))
+            foreach (var t in seedTokens.Take(12))
             {
                 var price = t.PriceUsd > 0 ? t.PriceUsd : 0.0001m;
                 _tokens[t.Mint] = new FeedToken
