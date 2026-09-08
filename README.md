@@ -19,6 +19,7 @@ small fresh wallet later, never your main key.
 config.json appears next to the exe on first start, seeds two wallets from
 gmgn 7d profit rank. press START, watch the feed.
 
+
 ## status
 
 early. tabs and paper broker work. live gmgn data is half-blocked by
