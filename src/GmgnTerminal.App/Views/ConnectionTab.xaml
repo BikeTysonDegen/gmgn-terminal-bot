@@ -32,7 +32,7 @@
                                    Foreground="{StaticResource TextSecondary}" TextWrapping="Wrap" MaxWidth="480"/>
                     </StackPanel>
                     <TextBlock Style="{StaticResource DimText}" Margin="0,10,0,0" TextWrapping="Wrap"
-                               Text="Most gmgn endpoints sit behind Cloudflare with a browser TLS check: rank/token_info usually pass, wallet activity often gets challenged. The bot logs every request and response — check the Logs tab."/>
+                               Text="Most gmgn endpoints sit behind Cloudflare with a browser TLS check: rank/token_info usually pass, wallet activity often gets challenged. The bot logs every request and response - check the Logs tab."/>
                 </StackPanel>
             </Border>
 
@@ -43,7 +43,7 @@
                     <TextBox Text="{Binding Proxy, UpdateSourceTrigger=LostFocus}"
                              FontFamily="Cascadia Mono, Consolas" FontSize="12"/>
                     <TextBlock Style="{StaticResource DimText}" Margin="0,8,0,0" TextWrapping="Wrap"
-                               Text="Full http(s) proxy URL, e.g. http://user:pass@host:port — used for all gmgn requests. socks5 is not supported. Credentials are masked in logs. Empty = direct connection."/>
+                               Text="Full http(s) proxy URL, e.g. http://user:pass@host:port - used for all gmgn requests. socks5 is not supported. Credentials are masked in logs. Empty = direct connection."/>
                 </StackPanel>
             </Border>
 
@@ -77,7 +77,7 @@
                     <TextBlock Text="DATA SOURCE" Style="{StaticResource HeaderText}" Margin="0,0,0,12"/>
                     <CheckBox Content="Offline data feed (simulate gmgn responses locally)" IsChecked="{Binding OfflineFeed}"/>
                     <TextBlock Style="{StaticResource DimText}" Margin="0,8,0,0" TextWrapping="Wrap"
-                               Text="The offline feed replays realistic leader activity and price walks for real solana mints — the whole copy pipeline runs without network. Uncheck to hit the live gmgn API (whatever Cloudflare lets through). Switching resets the paper session."/>
+                               Text="The offline feed replays realistic leader activity and price walks for real solana mints - the whole copy pipeline runs without network. Uncheck to hit the live gmgn API (whatever Cloudflare lets through). Switching resets the paper session."/>
                 </StackPanel>
             </Border>
 
