@@ -88,6 +88,19 @@ public class CopyEngine
         StatusChanged?.Invoke(false);
     }
 
+    // leader added while running: start its poll loop without a full restart
+    public void AddLeaderLoop(Leader leader)
+    {
+        if (!_running || _cts == null) return;
+        lock (_gate)
+        {
+            if (_watermarks.ContainsKey(leader.Address)) return; // loop already exists
+            _watermarks[leader.Address] = DateTimeOffset.UtcNow.ToUnixTimeSeconds() - InitialWatermarkWindowSec;
+        }
+        Log.Info($"leader added mid-run: {leader.Display}");
+        _ = Task.Run(() => PollLoopAsync(leader.Address, 0, _cts.Token));
+    }
+
     private async Task PollLoopAsync(string leaderAddress, int staggerMs, CancellationToken ct)
     {
         try
