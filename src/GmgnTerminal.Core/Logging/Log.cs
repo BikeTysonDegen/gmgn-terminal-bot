@@ -39,6 +39,11 @@ public static class Log
         LogBus.Publish(entry);
         FileLog? file;
         lock (Gate) file = _file;
-        try { file?.Write(entry); } catch { /* disk full etc, bus still has it */ }
+        try { file?.Write(entry); }
+        catch (Exception ex)
+        {
+            // file logging failed (disk full/locked), bus still has the entry
+            System.Diagnostics.Debug.WriteLine($"filelog drop: {ex.Message}");
+        }
     }
 }

@@ -15,6 +15,8 @@ namespace GmgnTerminal.Core.Gmgn;
 // (wallet_activity, quotation/*). The client never throws on that — it logs,
 // sets LastError and returns null/empty, and the engine falls back to the offline feed
 // data. Every request and response is logged (bodies truncated).
+// HACK: browser-ish headers only get us past cloudflare on some paths; if
+// rank starts 403ing too, proxy in Connection tab becomes mandatory
 public class GmgnApiClient : IDisposable, ITradeSource, IPriceSource
 {
     public const string SolMint = "So11111111111111111111111111111111111111112";

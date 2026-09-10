@@ -17,6 +17,7 @@ public class CopyEngine
     private const int ActivityLimit = 25;
     private const int InitialWatermarkWindowSec = 30;
     private const int DedupeCap = 100_000;
+    // TODO: persist seen keys to disk so a restart doesn't re-copy the last poll
 
     private readonly ITradeSource _source;
     private readonly IPriceSource _prices;
