@@ -144,6 +144,20 @@ public class PaperBrokerTests
     }
 
     [Fact]
+    public void Sell_WithSlippageAndFee_ReceivesLess()
+    {
+        var b = new PaperBroker(10m);
+        b.Buy(Buy(1m, 0.001m)); // 150000 tokens
+
+        // full exit, price 0.001, 10% slip -> exec 0.0009; gross 135 usd = 0.9 SOL; 1% fee -> 0.891 SOL
+        var r = b.Sell(Sell(1m, 0.001m, slip: 10m, fee: 1m));
+
+        Assert.True(r.Ok);
+        Assert.Equal(0.891m, Math.Round(r.Fill!.SolAmount, 6));
+        Assert.Equal(9.891m, b.BalanceSol);
+    }
+
+    [Fact]
     public void MarkPrice_UpdatesUnrealized()
     {
         var b = new PaperBroker(10m);
