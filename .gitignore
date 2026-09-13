@@ -1,14 +1,7 @@
-# Main branch: ignore everything, whitelist what we publish
-*
-
-# Published files
-!src/
-!src/**
-!README.md
-!LICENSE
-!.gitignore
-!.editorconfig
-!docs/
-!docs/**
-!.github/
-!.github/**
+# Dev branch: track everything, ignore only noise
+logs/
+bin/
+obj/
+.vs/
+*.user
+*.suo
